@@ -8,9 +8,7 @@ import os
 from email.message import EmailMessage
 from dotenv import load_dotenv
 
-def course_extractor():
-
-    url_moodle = "https://www.lsf.tu-dortmund.de/qisserver/rds?state=wtree&search=1&trex=step&root120262=204900|204702|204730&P.vx=kurz"
+def course_extractor(url_moodle):
     url_text = requests.get(url_moodle).text
 
     cleaned_text = BeautifulSoup(url_text, "html.parser").get_text()
@@ -38,7 +36,8 @@ def course_extractor():
 
 def send_email():
     load_dotenv()
-    df = course_extractor()
+    url_moodle = os.environ["moodle_link"]
+    df = course_extractor(url_moodle)
     df_filtered = df[df['apply'] == 1]
     df_filtered_subjects = df_filtered['subject'].tolist()
     
